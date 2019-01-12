@@ -1,0 +1,54 @@
+{
+    "name": "next-departure",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "apollo-boost": "^0.1.23",
+        "graphql": "^14.0.2",
+        "graphql-tag": "^2.10.0",
+        "prop-types": "^15.6.2",
+        "react": "^16.6.3",
+        "react-apollo": "^2.3.3",
+        "react-dom": "^16.6.3",
+        "react-geolocated": "^2.4.0",
+        "react-icons": "^3.2.2",
+        "react-router-dom": "^4.3.1",
+        "react-scripts": "^2.1.3"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
+    "devDependencies": {
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-config-prettier": "^3.3.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-jsx-a11y": "^6.1.2",
+        "eslint-plugin-prettier": "^3.0.1",
+        "eslint-plugin-react": "^7.12.3",
+        "husky": "^1.3.1",
+        "lint-staged": "^8.1.0",
+        "prettier": "^1.15.3",
+        "pretty-quick": "^1.8.0"
+    },
+    "precommit": "NODE_ENV=production lint-staged",
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "pretty-quick --staged",
+            "eslint src/ --fix",
+            "git add"
+        ]
+    },
+    "proxy": "http://localhost:5000/"
+}
