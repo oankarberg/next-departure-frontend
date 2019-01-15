@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdAddCircleOutline } from 'react-icons/io';
+import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import './Departures.css';
-import { withQuery } from '../../graphql/graphql';
+import { withQuery, withRedux } from '../../graphql/graphql';
+import Timer from '../Utils/Timer';
+import { removePassedStartTime } from '../../redux/actions/simpleAction';
+
 // eslint-disable-next-line
 const NUM_DEP = 50;
 
 class Departures extends Component {
+    static timeToHHmm(time) {
+        const date = new Date(time);
+        return date.toLocaleTimeString().slice(0, -3);
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -18,30 +27,29 @@ class Departures extends Component {
         };
     }
 
-    // updateTimeLeft() {
-    //     const { journeyFromTo } = this.state;
-    //     this.setState({
-    //         journeyFromTo: {
-    //             ...journeyFromTo,
-    //             departures: this.calculateTimeLeft(journeyFromTo.departures)
-    //         }
-    //     });
-    // }
-
     componentWillUnmount() {
         clearInterval(this.timerId);
     }
 
-    timeToHHmm(time) {
-        const date = new Date(time);
-        return date.toLocaleTimeString();
-    }
+    // filterListFromPassed()
+    simpleAction = event => {
+        console.log('evet ', this.props);
+        this.props.removePassedStartTime();
+    };
 
     render() {
         const { differentDepartures } = this.state;
-        const { journeyFromTo } = this.props.data;
+        const { journeyFromTo } = this.props.reduxData;
+        console.log('JSON.stringify(this.props)', journeyFromTo);
         return (
             <div className="departures-wrapper">
+                <button
+                    type="button"
+                    style={{ color: 'white' }}
+                    onClick={this.simpleAction}
+                >
+                    Trigger
+                </button>
                 {
                     <div className="departure-column">
                         {differentDepartures.map((_, key) => (
@@ -49,38 +57,37 @@ class Departures extends Component {
                                 <h3 className="direction-header">
                                     {journeyFromTo.direction}
                                 </h3>
-                                {journeyFromTo.departures
-                                    .slice(0, NUM_DEP)
-                                    .map(
-                                        (
-                                            {
-                                                transportName,
-                                                timeLeft,
-                                                startTime,
-                                                direction
-                                            },
-                                            key
-                                        ) => (
-                                            <div
-                                                key={key}
-                                                className="bus-stop-card"
-                                            >
-                                                <div>
-                                                    {transportName} mot{' '}
-                                                    {direction}
-                                                </div>
-                                                <div>{timeLeft}</div>
-                                                <div>
-                                                    {this.timeToHHmm(startTime)}
-                                                </div>
+                                {journeyFromTo.departures.map(
+                                    (
+                                        { transportName, startTime, direction },
+                                        key
+                                    ) => (
+                                        <div
+                                            key={startTime}
+                                            className="bus-stop-card"
+                                        >
+                                            <div>
+                                                {transportName} mot {direction}
                                             </div>
-                                        )
-                                    )}
+                                            <Timer
+                                                // onEnded={
+                                                //     this.filterListFromPassed
+                                                // }
+                                                startTime={startTime}
+                                            />
+                                            <div>
+                                                {Departures.timeToHHmm(
+                                                    startTime
+                                                )}
+                                            </div>
+                                        </div>
+                                    )
+                                )}
                             </div>
                         ))}
                     </div>
                 }
-                <button className="add-departure">
+                <button className="add-departure" type="button">
                     <IoMdAddCircleOutline size={40} />
                 </button>
             </div>
@@ -115,10 +122,28 @@ const variables = {
     endStopId: '12412'
 };
 
-Departures.propTypes = {
-    location: PropTypes.object,
-    match: PropTypes.object,
-    data: PropTypes.object
+const mapStateToProps = state => ({
+    ...state
+});
+
+const mapDispatchToProps = {
+    removePassedStartTime
 };
 
-export default withQuery(Departures, query, variables);
+Departures.propTypes = {
+    // location: PropTypes.objectOf(PropTypes.any),
+    // match: PropTypes.object,
+    // data: PropTypes.object
+};
+export default withRedux(
+    Departures,
+    query,
+    variables,
+    mapStateToProps,
+    mapDispatchToProps
+);
+// const DepartureWithQuery = withQuery(Departures, query, variables);
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps
+// )(DepartureWithQuery);

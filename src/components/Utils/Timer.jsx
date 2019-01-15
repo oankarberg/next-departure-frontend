@@ -1,36 +1,69 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Timer extends Component {
+    static secondsToTime(secs) {
+        const hours = Math.floor(secs / (60 * 60));
+
+        const divisorForMinutes = secs % (60 * 60);
+        const minutes = Math.floor(divisorForMinutes / 60);
+
+        const divisorForSeconds = divisorForMinutes % 60;
+        const seconds = Math.ceil(divisorForSeconds);
+
+        const time = {
+            h: hours,
+            m: minutes,
+            s: seconds
+        };
+        return Timer.timeToString(time);
+    }
+
+    static timeToString(time) {
+        let str = '';
+        str += time.h < 1 ? '' : `${time.h} h `;
+        str += time.m < 1 ? '' : `${time.m} min `;
+        str += `${time.s} sec`;
+        return str;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
-            countDown: undefined
+            countDown: ''
         };
     }
 
     componentDidMount() {
         const { startTime } = this.props;
-        startCountDown(startTime);
+        this.startCountDown(startTime);
     }
 
     componentWillUnmount() {
         clearInterval(this.timer);
     }
-    startCountDown(startTime) {
+
+    startCountDown(sTime) {
         this.setState({
-            isOn: true,
-            startTime: startTime,
-            countDown: startTime - Date.now()
+            startTime: sTime,
+            countDown: sTime - Date.now()
         });
-        this.timer = setInterval(
-            () =>
-                this.setState({
-                    countDown: secondsToTime(
-                        (new Date(this.state.startTime) - Date.now()) / 1000
-                    )
-                }),
-            1000
-        );
+        this.timer = setInterval(() => {
+            const { startTime } = this.state;
+            const diffInSec = (new Date(startTime) - Date.now()) / 1000;
+            if (diffInSec < 1) {
+                this.removeFromParentList();
+            }
+            this.setState({
+                startTime,
+                countDown: Timer.secondsToTime(diffInSec)
+            });
+        }, 1000);
+    }
+
+    removeFromParentList() {
+        const { onEnded } = this.props;
+        onEnded();
     }
 
     // calculateTimeLeft(departures) {
@@ -51,30 +84,15 @@ class Timer extends Component {
     //     }, []);
     // }
 
-    secondsToTime(secs) {
-        let hours = Math.floor(secs / (60 * 60));
-
-        let divisor_for_minutes = secs % (60 * 60);
-        let minutes = Math.floor(divisor_for_minutes / 60);
-
-        let divisor_for_seconds = divisor_for_minutes % 60;
-        let seconds = Math.ceil(divisor_for_seconds);
-
-        let obj = {
-            h: hours,
-            m: minutes,
-            s: seconds
-        };
-        return obj;
-    }
-
     render() {
         const { countDown } = this.state;
-        return (
-            <div>
-                <h3>{this}</h3>
-            </div>
-        );
+        return <div>{countDown}</div>;
     }
 }
-module.exports = Timer;
+Timer.defaultProps = {
+    onEnded: () => {}
+};
+Timer.propTypes = {
+    onEnded: PropTypes.func
+};
+export default Timer;

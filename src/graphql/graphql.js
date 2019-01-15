@@ -1,6 +1,10 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Spinner from '../components/Spinner/Spinner';
+import { fetchDataSuccess } from '../redux/actions/simpleAction';
 
 const GraphQLContext = React.createContext({});
 const GraphQLProvider = GraphQLContext.Provider;
@@ -37,6 +41,7 @@ const queryWrap = (WrappedComponent, query, staticVariables) => {
         }
 
         componentDidMount() {
+            console.log('graphql ', this.props);
             this._mounted = true;
             const { watchQuery } = this.state;
             watchQuery.subscribe(({ loading, data }) => {
@@ -66,6 +71,81 @@ const queryWrap = (WrappedComponent, query, staticVariables) => {
     return Query;
 };
 
+const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
+    class QueryRedux extends Component {
+        constructor(props) {
+            super(props);
+            const { client, variables } = this.props;
+            const watchQuery = client.watchQuery({
+                query,
+                variables: variables || staticVariables,
+                notifyOnNetworkStatusChange: true
+            });
+            this.state = {
+                watchQuery,
+                data: false,
+                variables: variables || staticVariables
+            };
+        }
+
+        componentDidMount() {
+            console.log('graphql ', this.props);
+            this._mounted = true;
+            const { watchQuery } = this.state;
+            watchQuery.subscribe(({ loading, data }) => {
+                if (this._mounted) {
+                    if (!loading) {
+                        this.props.fetchDataSuccess(data);
+                    }
+                }
+            });
+        }
+
+        componentWillUnmount() {
+            this._mounted = false;
+        }
+
+        render() {
+            const { reduxData } = this.props;
+            return (
+                <>
+                    {reduxData ? (
+                        <WrappedComponent {...this.state} {...this.props} />
+                    ) : (
+                        <Spinner />
+                    )}
+                </>
+            );
+        }
+    }
+    return QueryRedux;
+};
+
+const mapDefaultStateToProps = state => ({
+    ...state
+});
+
+const mapDefaultDispatchToProps = {
+    fetchDataSuccess
+};
 const withQuery = (WrappedComponent, query, variables) =>
     withGraphQL(queryWrap(WrappedComponent, query, variables));
-export { withQuery, withGraphQL, GraphQLProvider };
+
+const withQueryRedux = (WrappedComponent, query, variables) =>
+    withGraphQL(queryWrapRedux(WrappedComponent, query, variables));
+
+const withRedux = (
+    WrappedComponent,
+    query,
+    variables,
+    mapStateToProps,
+    mapDispatchToProps
+) => {
+    const allAndAll = withQueryRedux(WrappedComponent, query, variables);
+    return connect(
+        mapDefaultStateToProps,
+        { ...mapDefaultDispatchToProps, ...mapDispatchToProps }
+    )(allAndAll);
+};
+
+export { withRedux, withQuery, withGraphQL, GraphQLProvider };

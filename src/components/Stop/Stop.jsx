@@ -18,16 +18,16 @@ class Stop extends Component {
         return (
             <div className="bus-stop-wrapper">
                 {depBoardFromStop.map(
-                    ({ endStops, transportName, startStop }, key) => (
-                        <div key={key} className="bus-stop-card">
+                    ({ endStops, transportName, startStop }, index) => (
+                        <div key={index} className="bus-stop-card">
                             <div>
                                 <b>{transportName} </b>
                             </div>
                             <div> Mot</div>
                             <div className="endstops">
-                                {endStops.map((dir, key) => (
+                                {endStops.map((dir, arrIndex) => (
                                     <Link
-                                        key={key}
+                                        key={arrIndex}
                                         to={`${startStop.id}/to/${dir.id}`}
                                     >
                                         <div className="direction-button">
