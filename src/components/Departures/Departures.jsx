@@ -4,9 +4,11 @@ import { IoMdAddCircleOutline } from 'react-icons/io';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import './Departures.css';
+import { FaLongArrowAltRight } from 'react-icons/fa';
 import { withQuery, withRedux } from '../../graphql/graphql';
 import Timer from '../Utils/Timer';
 import { removePassedStartTime } from '../../redux/actions/simpleAction';
+import TransportIcon from '../Icons/TransportIcon';
 
 // eslint-disable-next-line
 const NUM_DEP = 50;
@@ -17,65 +19,58 @@ class Departures extends Component {
         return date.toLocaleTimeString().slice(0, -3);
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            // journeyFromTo: {
-            //     departures: []
-            // },
-            differentDepartures: [1]
-        };
-    }
-
     componentWillUnmount() {
         clearInterval(this.timerId);
     }
 
-    // filterListFromPassed()
-    simpleAction = event => {
-        console.log('evet ', this.props);
-        this.props.removePassedStartTime();
-    };
-
     render() {
-        const { differentDepartures } = this.state;
-        const { journeyFromTo } = this.props.reduxData;
-        console.log('JSON.stringify(this.props)', journeyFromTo);
+        const {
+            removePassedStartTime: removeFromList,
+            data: { journeyFromTo }
+        } = this.props;
         return (
             <div className="departures-wrapper">
-                <button
-                    type="button"
-                    style={{ color: 'white' }}
-                    onClick={this.simpleAction}
-                >
-                    Trigger
-                </button>
                 {
                     <div className="departure-column">
-                        {differentDepartures.map((_, key) => (
-                            <div key={key} className="bus-stop-wrapper">
-                                <h3 className="direction-header">
-                                    {journeyFromTo.direction}
-                                </h3>
+                        {
+                            <div className="bus-stop-wrapper">
+                                <div className="direction-header">
+                                    <div>{journeyFromTo.startStop.name}</div>
+                                    <div>
+                                        <FaLongArrowAltRight />
+                                    </div>
+                                    <div>{journeyFromTo.endStop.name}</div>
+                                </div>
                                 {journeyFromTo.departures.map(
                                     (
-                                        { transportName, startTime, direction },
+                                        {
+                                            transportCategory,
+                                            transportNumber,
+                                            startTime
+                                        },
                                         key
                                     ) => (
                                         <div
-                                            key={startTime}
+                                            key={startTime + key}
                                             className="bus-stop-card"
                                         >
-                                            <div>
-                                                {transportName} mot {direction}
+                                            <div className="flex row">
+                                                <div>
+                                                    <TransportIcon
+                                                        category={
+                                                            transportCategory
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="bus-number">
+                                                    {transportNumber}
+                                                </div>
                                             </div>
                                             <Timer
-                                                // onEnded={
-                                                //     this.filterListFromPassed
-                                                // }
+                                                onEnded={removeFromList}
                                                 startTime={startTime}
                                             />
-                                            <div>
+                                            <div className="right-text">
                                                 {Departures.timeToHHmm(
                                                     startTime
                                                 )}
@@ -84,7 +79,7 @@ class Departures extends Component {
                                     )
                                 )}
                             </div>
-                        ))}
+                        }
                     </div>
                 }
                 <button className="add-departure" type="button">

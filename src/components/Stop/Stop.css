@@ -1,5 +1,3 @@
-
-
 .bus-stop-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -9,29 +7,52 @@
     text-align: center;
     color: #fff;
     min-width: 200px;
-    flex: 2 1 100%;
+    flex: 0;
+    flex: 1 1 100%;
     display: flex;
     padding: 10px 10px;
     box-sizing: border-box;
     background: #08161f;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    margin: 0 -6px;
     border-top: 1px solid #fff;
-    justify-content: center;
-}
-.bus-stop-card > .endstops {
-    width:100%;
+    justify-content: space-between;
 }
 
 .bus-stop-card > div {
-    margin: 2px 0;
+    text-align: left;
+    flex: 1;
 }
 
+.bus-stop-card > div.bus-number {
+    min-width: 40px;
+    align-self: center;
+}
+
+.bus-stop-card > .endstops {
+    flex: 1 1 50%;
+}
+
+.bus-stop-card > div {
+    margin: 2px 6px;
+}
+
+button.direction-button {
+    width: 100%;
+}
 .direction-button {
-    background: #ff8d10;
+    background: #bbad9ce8;
     padding: 6px 13px;
     border-radius: 2px;
     color: black;
+    border: none;
+    flex: 1;
     margin: 2px 0;
     cursor: pointer;
+}
+
+.direction-button.dark {
+    background: #9a6e3e;
+    color: white;
 }

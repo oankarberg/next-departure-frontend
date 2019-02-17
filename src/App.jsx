@@ -4,6 +4,7 @@ import NextDep from './components/NextDep/NextDep';
 import Stop from './components/Stop/Stop';
 import Departures from './components/Departures/Departures';
 import './App.css';
+import StartToEnd from './components/StartToEnd/StartToEnd';
 
 const App = () => (
     <Router>
@@ -25,14 +26,12 @@ const App = () => (
                 exact
                 path="/stops/:stopId/to/:endStopId"
                 component={props => (
-                    <Departures
-                        {...props}
-                        variables={{
-                            stopId: props.match.params.stopId,
-                            endStopId: props.match.params.endStopId
-                        }}
-                    />
-                )}
+                        <StartToEnd
+                            {...props}
+                            startStopId={props.match.params.stopId}
+                            endStopId={props.match.params.endStopId}
+                        />
+                    )}
             />
         </div>
     </Router>

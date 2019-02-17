@@ -6,40 +6,29 @@ import './StationStops.css';
 import Spinner from '../Spinner/Spinner';
 import { withQuery } from '../../graphql/graphql';
 
-class StationStops extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            nearByStops: []
-        };
-    }
-
-    componentDidMount() {}
-
-    render() {
-        const { nearByStops } = this.props.data;
-        return (
-            <div className="bus-stop-wrapper">
-                {!nearByStops ? (
-                    <Spinner />
-                ) : (
-                    nearByStops.map((stop, key) => (
-                        <Link
-                            to={`stops/${stop.id}`}
-                            key={key}
-                            className="bus-stop-card"
-                        >
-                            {stop.name} {stop.dist} m
-                        </Link>
-                    ))
-                )}
-            </div>
-        );
-    }
-}
+const StationStops = ({ data: { nearByStops } }) => (
+    <div className="bus-stop-wrapper">
+        {!nearByStops ? (
+            <Spinner />
+        ) : (
+            nearByStops.map((stop, key) => (
+                <Link
+                    to={`stops/${stop.id}`}
+                    key={key}
+                    className="bus-stop-card"
+                >
+                    <div>{stop.name}</div>
+                    <div>{stop.dist} m</div>
+                </Link>
+            ))
+        )}
+    </div>
+);
 
 StationStops.propTypes = {
-    location: PropTypes.object
+    data: PropTypes.shape({
+        nearByStops: PropTypes.array
+    }).isRequired
 };
 const query = gql`
     query nearByStops($lat: Float!, $lon: Float!) {

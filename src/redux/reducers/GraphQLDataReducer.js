@@ -12,12 +12,11 @@ export default (state = null, action) => {
                 ...action.payload
             };
         case 'REMOVE_PASSED_JOURNEY':
-            const { journeyFromTo } = state;
             return {
                 ...state,
                 journeyFromTo: {
                     ...state.journeyFromTo,
-                    departures: journeyFromTo.departures.filter(
+                    departures: state.journeyFromTo.departures.filter(
                         ({ startTime }) => new Date(startTime) > new Date()
                     )
                 }

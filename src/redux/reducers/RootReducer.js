@@ -3,6 +3,6 @@ import reduxData from './GraphQLDataReducer';
 import filterJourneysReducer from './FilterJourneysReducer';
 
 export default combineReducers({
-    reduxData,
+    data: reduxData,
     filterJourneysReducer
 });

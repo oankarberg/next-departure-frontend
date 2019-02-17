@@ -1,8 +1,7 @@
-
 .departure-column {
     display: flex;
 }
-.add-departure{
+.add-departure {
     width: 100%;
     padding: 10px;
     height: 50%;
@@ -11,22 +10,20 @@
 }
 .direction-header {
     text-align: center;
+    display: flex;
+    justify-content: space-around;
+    font-size: 20px;
+    margin: 20px 0;
     width: 100%;
     font-weight: 500;
+}
 
+.departures-wrapper .bus-number {
+    margin: 0 4px;
 }
 .departures-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.direction-button {
-    background: #ff8d10;
-    padding: 6px 13px;
-    border-radius: 2px;
-    color: black;
-    margin: 2px 0;
-    cursor: pointer;
 }

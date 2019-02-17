@@ -41,7 +41,6 @@ const queryWrap = (WrappedComponent, query, staticVariables) => {
         }
 
         componentDidMount() {
-            console.log('graphql ', this.props);
             this._mounted = true;
             const { watchQuery } = this.state;
             watchQuery.subscribe(({ loading, data }) => {
@@ -89,11 +88,9 @@ const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
         }
 
         componentDidMount() {
-            console.log('graphql ', this.props);
-            this._mounted = true;
             const { watchQuery } = this.state;
-            watchQuery.subscribe(({ loading, data }) => {
-                if (this._mounted) {
+            this._subscription = watchQuery.subscribe(({ loading, data }) => {
+                if (this._subscription) {
                     if (!loading) {
                         this.props.fetchDataSuccess(data);
                     }
@@ -102,14 +99,15 @@ const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
         }
 
         componentWillUnmount() {
-            this._mounted = false;
+            this._subscription.unsubscribe();
+            delete this._subscription;
         }
 
         render() {
-            const { reduxData } = this.props;
+            const { data } = this.props;
             return (
                 <>
-                    {reduxData ? (
+                    {data ? (
                         <WrappedComponent {...this.state} {...this.props} />
                     ) : (
                         <Spinner />

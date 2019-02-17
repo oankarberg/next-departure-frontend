@@ -23,19 +23,20 @@ class Timer extends Component {
         let str = '';
         str += time.h < 1 ? '' : `${time.h} h `;
         str += time.m < 1 ? '' : `${time.m} min `;
-        str += `${time.s} sec`;
+        str += time.h >= 1 || time.m >= 10 ? '' : `${time.s} sec`;
         return str;
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            countDown: ''
+            timeLeft: ''
         };
     }
 
     componentDidMount() {
         const { startTime } = this.props;
+        this.updateTimeLeft(startTime);
         this.startCountDown(startTime);
     }
 
@@ -43,21 +44,21 @@ class Timer extends Component {
         clearInterval(this.timer);
     }
 
-    startCountDown(sTime) {
+    updateTimeLeft(startTime) {
+        const diffInSec = (new Date(startTime) - Date.now()) / 1000;
+        if (diffInSec < 1) {
+            this.removeFromParentList();
+        }
         this.setState({
-            startTime: sTime,
-            countDown: sTime - Date.now()
+            startTime,
+            timeLeft: Timer.secondsToTime(diffInSec)
         });
+    }
+
+    startCountDown() {
         this.timer = setInterval(() => {
             const { startTime } = this.state;
-            const diffInSec = (new Date(startTime) - Date.now()) / 1000;
-            if (diffInSec < 1) {
-                this.removeFromParentList();
-            }
-            this.setState({
-                startTime,
-                countDown: Timer.secondsToTime(diffInSec)
-            });
+            this.updateTimeLeft(startTime);
         }, 1000);
     }
 
@@ -66,27 +67,9 @@ class Timer extends Component {
         onEnded();
     }
 
-    // calculateTimeLeft(departures) {
-    //     return departures.reduce((arr, dep, key) => {
-    //         const timeDiffInMinutes =
-    //             (new Date(dep.startTime) - new Date()) / (1000 * 60);
-    //         if (timeDiffInMinutes < 0) {
-    //             return arr;
-    //         }
-    //         const minutesLeft = Math.floor(timeDiffInMinutes);
-    //         let seconds = Math.round(timeDiffInMinutes * 60);
-    //         if (minutesLeft >= 1) {
-    //             seconds = Math.round((timeDiffInMinutes % minutesLeft) * 60);
-    //         }
-    //         const timeLeftStr = `${minutesLeft} min ${seconds} sek`;
-    //         arr.push({ ...dep, timeLeft: timeLeftStr });
-    //         return arr;
-    //     }, []);
-    // }
-
     render() {
-        const { countDown } = this.state;
-        return <div>{countDown}</div>;
+        const { timeLeft } = this.state;
+        return <div>{timeLeft}</div>;
     }
 }
 Timer.defaultProps = {
