@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { IoMdAddCircleOutline } from 'react-icons/io';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
-import './Departures.css';
 import { FaLongArrowAltRight } from 'react-icons/fa';
-import { withQuery, withRedux } from '../../graphql/graphql';
+import './Departures.css';
+import { withQueryRedux } from '../../graphql/graphql';
 import Timer from '../Utils/Timer';
 import { removePassedStartTime } from '../../redux/actions/simpleAction';
 import TransportIcon from '../Icons/TransportIcon';
@@ -82,9 +81,6 @@ class Departures extends Component {
                         }
                     </div>
                 }
-                <button className="add-departure" type="button">
-                    <IoMdAddCircleOutline size={40} />
-                </button>
             </div>
         );
     }
@@ -130,7 +126,7 @@ Departures.propTypes = {
     // match: PropTypes.object,
     // data: PropTypes.object
 };
-export default withRedux(
+export default withQueryRedux(
     Departures,
     query,
     variables,

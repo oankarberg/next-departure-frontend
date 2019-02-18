@@ -24,61 +24,69 @@ withGraphQL.propTypes = {
     data: PropTypes.objectOf(PropTypes.any)
 };
 
-const queryWrap = (WrappedComponent, query, staticVariables) => {
-    class Query extends Component {
-        constructor(props) {
-            super(props);
-            const { client, variables } = this.props;
-            const watchQuery = client.watchQuery({
-                query,
-                variables: variables || staticVariables,
-                notifyOnNetworkStatusChange: true
-            });
-            this.state = {
-                watchQuery,
-                variables: variables || staticVariables
-            };
-        }
+// const queryWrap = (WrappedComponent, query, staticVariables) => {
+//     class Query extends Component {
+//         constructor(props) {
+//             super(props);
+//             const { client, variables, pollingInterval } = this.props;
+//             const watchQuery = client.watchQuery({
+//                 query,
+//                 variables: variables || staticVariables,
+//                 notifyOnNetworkStatusChange: true,
+//                 pollInterval: pollingInterval || 0
+//             });
+//             this.state = {
+//                 watchQuery,
+//                 data: false,
+//                 variables: variables || staticVariables
+//             };
+//         }
 
-        componentDidMount() {
-            this._mounted = true;
-            const { watchQuery } = this.state;
-            watchQuery.subscribe(({ loading, data }) => {
-                if (this._mounted) {
-                    this.setState({ loading, data });
-                }
-            });
-        }
+//         componentDidMount() {
+//             this._mounted = true;
+//             const { watchQuery } = this.state;
+//             this._subscription = watchQuery.subscribe(
+//                 ({ loading, data, error }) => {
+//                     if (this._subscription) {
+//                         if (!loading && !error) {
+//                             this.setState({ loading, data });
+//                         }
+//                     }
+//                 }
+//             );
+//         }
 
-        componentWillUnmount() {
-            this._mounted = false;
-        }
+//         componentWillUnmount() {
+//             this._subscription.unsubscribe();
+//             this._mounted = false;
+//         }
 
-        render() {
-            const { data } = this.state;
-            return (
-                <>
-                    {data ? (
-                        <WrappedComponent {...this.state} {...this.props} />
-                    ) : (
-                        <Spinner />
-                    )}
-                </>
-            );
-        }
-    }
-    return Query;
-};
+//         render() {
+//             const { data } = this.state;
+//             return (
+//                 <>
+//                     {data ? (
+//                         <WrappedComponent {...this.state} {...this.props} />
+//                     ) : (
+//                         <Spinner />
+//                     )}
+//                 </>
+//             );
+//         }
+//     }
+//     return Query;
+// };
 
-const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
+const queryWrap = (WrappedComponent, query, staticVariables, withRedux) => {
     class QueryRedux extends Component {
         constructor(props) {
             super(props);
-            const { client, variables } = this.props;
+            const { client, variables, pollingInterval } = this.props;
             const watchQuery = client.watchQuery({
                 query,
                 variables: variables || staticVariables,
-                notifyOnNetworkStatusChange: true
+                notifyOnNetworkStatusChange: true,
+                pollInterval: pollingInterval || 0
             });
             this.state = {
                 watchQuery,
@@ -92,7 +100,11 @@ const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
             this._subscription = watchQuery.subscribe(({ loading, data }) => {
                 if (this._subscription) {
                     if (!loading) {
-                        this.props.fetchDataSuccess(data);
+                        if (withRedux) {
+                            this.props.fetchDataSuccess(data);
+                        } else {
+                            this.setState({ loading, data });
+                        }
                     }
                 }
             });
@@ -104,7 +116,12 @@ const queryWrapRedux = (WrappedComponent, query, staticVariables) => {
         }
 
         render() {
-            const { data } = this.props;
+            let data;
+            if (withRedux) {
+                data = this.props.data;
+            } else {
+                data = this.state.data;
+            }
             return (
                 <>
                     {data ? (
@@ -129,21 +146,20 @@ const mapDefaultDispatchToProps = {
 const withQuery = (WrappedComponent, query, variables) =>
     withGraphQL(queryWrap(WrappedComponent, query, variables));
 
-const withQueryRedux = (WrappedComponent, query, variables) =>
-    withGraphQL(queryWrapRedux(WrappedComponent, query, variables));
-
-const withRedux = (
+const withQueryRedux = (
     WrappedComponent,
     query,
     variables,
     mapStateToProps,
     mapDispatchToProps
 ) => {
-    const allAndAll = withQueryRedux(WrappedComponent, query, variables);
+    const allAndAll = withGraphQL(
+        queryWrap(WrappedComponent, query, variables, true)
+    );
     return connect(
         mapDefaultStateToProps,
         { ...mapDefaultDispatchToProps, ...mapDispatchToProps }
     )(allAndAll);
 };
 
-export { withRedux, withQuery, withGraphQL, GraphQLProvider };
+export { withQueryRedux, withQuery, withGraphQL, GraphQLProvider };
