@@ -1,0 +1,72 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START cloudbuild]
+steps:
+    # This step builds the container image.
+    - name: 'gcr.io/cloud-builders/docker'
+      id: Build
+      args:
+          - 'build'
+          - '-t'
+          - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
+          - '.'
+
+    # This step pushes the image to Container Registry
+    # The PROJECT_ID and SHORT_SHA variables are automatically
+    # replaced by Cloud Build.
+    - name: 'gcr.io/cloud-builders/docker'
+      id: Push
+      args:
+          - 'push'
+          - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
+    # [END cloudbuild]
+
+    # [START cloudbuild-trigger-cd]
+    # This step clones the hello-cloudbuild-env repository
+    - name: 'gcr.io/cloud-builders/gcloud'
+      id: Clone env repository
+      entrypoint: /bin/sh
+      args:
+          - '-c'
+          - |
+              gcloud source repos clone github_oankarberg_next-dep-app-cloudbuild-env && \
+              cd github_oankarberg_next-dep-app-cloudbuild-env && \
+              git checkout candidate && \
+              git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+    # This step generates the new manifest
+    - name: 'gcr.io/cloud-builders/gcloud'
+      id: Generate manifest
+      entrypoint: /bin/sh
+      args:
+          - '-c'
+          - |
+              sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes_next_departure/next-departure-frontend/deployment.json | \
+              sed "s/COMMIT_SHA/${SHORT_SHA}/g" > github_oankarberg_next-dep-app-cloudbuild-env/kubernetes.json
+    # This step pushes the manifest back to hello-cloudbuild-env
+    - name: 'gcr.io/cloud-builders/gcloud'
+      id: Push manifest
+      entrypoint: /bin/sh
+      args:
+          - '-c'
+          - |
+              set -x && \
+              cd github_oankarberg_next-dep-app-cloudbuild-env && \
+              git add kubernetes.json && \
+              git commit -m "Deploying image gcr.io/${PROJECT_ID}/next-departure-frontend-cloudbuild:${SHORT_SHA}
+              Built from commit ${COMMIT_SHA} of repository next-departure-frontend
+              Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
+              git push origin candidate
+
+# [END cloudbuild-trigger-cd]
