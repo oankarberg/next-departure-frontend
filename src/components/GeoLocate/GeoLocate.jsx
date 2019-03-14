@@ -10,7 +10,7 @@ class GeoLocate extends Component {
         return !this.props.isGeolocationAvailable ? (
             <div>Your browser does not support Geolocation</div>
         ) : !this.props.isGeolocationEnabled ? (
-            <div>Geolocation is not enabled</div>
+            <div>Platstjänsten är inte aktiverad</div>
         ) : this.props.coords ? null : (
             <div>Hämtar din plats&hellip; </div>
         );

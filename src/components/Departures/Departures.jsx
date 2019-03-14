@@ -41,16 +41,13 @@ class Departures extends Component {
                                     <div>{journeyFromTo.endStop.name}</div>
                                 </div>
                                 {journeyFromTo.departures.map(
-                                    (
-                                        {
-                                            transportCategory,
-                                            transportNumber,
-                                            startTime
-                                        },
-                                        key
-                                    ) => (
+                                    ({
+                                        transportCategory,
+                                        transportNumber,
+                                        startTime
+                                    }) => (
                                         <div
-                                            key={startTime + key}
+                                            key={startTime}
                                             className="bus-stop-card"
                                         >
                                             <div className="flex row">

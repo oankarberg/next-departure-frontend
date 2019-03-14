@@ -8,9 +8,10 @@ import * as serviceWorker from './serviceWorker';
 
 import { GraphQLProvider } from './graphql/graphql';
 import configureStore from './redux/store/store';
+import { API_ENDPOINT } from './config';
 
 const client = new ApolloClient({
-    uri: 'http://localhost:4000'
+    uri: API_ENDPOINT
 });
 
 ReactDOM.render(

@@ -5,7 +5,6 @@ export default (state = null, action) => {
                 result: action.payload
             };
         case 'FETCH_DATA_SUCCESS':
-            console.log('action.payload', action.payload);
             return {
                 ...state,
                 loading: false,
