@@ -52,7 +52,7 @@ steps:
       args:
           - '-c'
           - |
-              sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" ~/kubernetes_next_departure/next-departure-frontend/deployment.json | \
+              sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" /home/oankarberg/kubernetes_next_departure/next-departure-frontend/deployment.json | \
               sed "s/COMMIT_SHA/${SHORT_SHA}/g" > next-dep-app-cloudbuild-env/kubernetes.json
     # This step pushes the manifest back to hello-cloudbuild-env
     - name: 'gcr.io/cloud-builders/gcloud'
