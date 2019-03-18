@@ -41,8 +41,8 @@ steps:
       args:
           - '-c'
           - |
-              gcloud source repos clone github_oankarberg_next-dep-app-cloudbuild-env && \
-              cd github_oankarberg_next-dep-app-cloudbuild-env && \
+              gcloud source repos clone next-dep-app-cloudbuild-env && \
+              cd next-dep-app-cloudbuild-env && \
               git checkout candidate && \
               git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
     # This step generates the new manifest
@@ -53,7 +53,7 @@ steps:
           - '-c'
           - |
               sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" ~/kubernetes_next_departure/next-departure-frontend/deployment.json | \
-              sed "s/COMMIT_SHA/${SHORT_SHA}/g" > github_oankarberg_next-dep-app-cloudbuild-env/kubernetes.json
+              sed "s/COMMIT_SHA/${SHORT_SHA}/g" > next-dep-app-cloudbuild-env/kubernetes.json
     # This step pushes the manifest back to hello-cloudbuild-env
     - name: 'gcr.io/cloud-builders/gcloud'
       id: Push manifest
@@ -62,7 +62,7 @@ steps:
           - '-c'
           - |
               set -x && \
-              cd github_oankarberg_next-dep-app-cloudbuild-env && \
+              cd next-dep-app-cloudbuild-env && \
               git add kubernetes.json && \
               git commit -m "Deploying image gcr.io/${PROJECT_ID}/next-departure-frontend-cloudbuild:${SHORT_SHA}
               Built from commit ${COMMIT_SHA} of repository next-departure-frontend
