@@ -85,8 +85,8 @@ steps:
       args:
           - '-c'
           - |
-              sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" deployment.tpl.json | \
-              sed "s/COMMIT_SHA/${SHORT_SHA}/g" > next-dep-app-cloudbuild-env/kubernetes.json
+              sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" deployment.tpl.yaml | \
+              sed "s/COMMIT_SHA/${SHORT_SHA}/g" > next-dep-app-cloudbuild-env/kubernetes.yaml
     # This step pushes the manifest back to hello-cloudbuild-env
     - name: 'gcr.io/cloud-builders/gcloud'
       id: Push manifest
@@ -96,7 +96,7 @@ steps:
           - |
               set -x && \
               cd next-dep-app-cloudbuild-env && \
-              git add kubernetes.json && \
+              git add kubernetes.yaml && \
               git commit -m "Deploying image gcr.io/${PROJECT_ID}/next-departure-frontend-cloudbuild:${SHORT_SHA}
               Built from commit ${COMMIT_SHA} of repository next-departure-frontend
               Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \

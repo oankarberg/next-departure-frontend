@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    annotations:
+        deployment.kubernetes.io/revision: '2'
+        kubectl.kubernetes.io/last-applied-configuration: |
+            {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{"deployment.kubernetes.io/revision":"1"},"creationTimestamp":"2019-02-20T10:13:46Z","generation":1,"labels":{"run":"next-departure-frontend"},"name":"next-departure-frontend","namespace":"default","resourceVersion":"62248","selfLink":"/apis/extensions/v1beta1/namespaces/default/deployments/next-departure-frontend","uid":"357dc645-34f8-11e9-987c-f2b458b84f14"},"spec":{"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"run":"next-departure-frontend"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"creationTimestamp":null,"labels":{"run":"next-departure-frontend"}},"spec":{"containers":[{"image":"eu.gcr.io/next-dep-app/next-departure-frontend:latest","name":"next-departure-frontend","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30}}}}
+    creationTimestamp: 2019-02-24T20:26:09Z
+    generation: 2
+    labels:
+        run: next-departure-frontend
+    name: next-departure-frontend
+    namespace: default
+    resourceVersion: '3894014'
+    selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/next-departure-frontend
+    uid: 6bd21dd0-3872-11e9-a655-42010af001a7
+spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+        matchLabels:
+            run: next-departure-frontend
+    strategy:
+        rollingUpdate:
+            maxSurge: 25%
+            maxUnavailable: 25%
+        type: RollingUpdate
+    template:
+        metadata:
+            creationTimestamp: null
+            labels:
+                run: next-departure-frontend
+        spec:
+            containers:
+                - image: eu.gcr.io/GOOGLE_CLOUD_PROJECT/next-departure-frontend:COMMIT_SHA
+                  imagePullPolicy: Always
+                  name: next-departure-frontend
+                  ports:
+                      - containerPort: 80
+                        protocol: TCP
+                  resources: {}
+                  terminationMessagePath: /dev/termination-log
+                  terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            restartPolicy: Always
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+status:
+    availableReplicas: 1
+    conditions:
+        - lastTransitionTime: 2019-03-19T11:14:47Z
+          lastUpdateTime: 2019-03-19T11:14:47Z
+          message: Deployment has minimum availability.
+          reason: MinimumReplicasAvailable
+          status: 'True'
+          type: Available
+        - lastTransitionTime: 2019-02-24T20:26:09Z
+          lastUpdateTime: 2019-03-19T21:37:41Z
+          message: ReplicaSet "next-departure-frontend-757c77bcbb" has successfully progressed.
+          reason: NewReplicaSetAvailable
+          status: 'True'
+          type: Progressing
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
