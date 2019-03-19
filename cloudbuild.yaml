@@ -57,6 +57,8 @@ steps:
               cat <<EOF >/root/.ssh/config
               Hostname github.com
               IdentityFile /root/.ssh/id_rsa
+              Host *
+                UseKeychain yes
               EOF
               mv known_hosts /root/.ssh/known_hosts
       volumes:
