@@ -95,7 +95,8 @@ steps:
           - '-c'
           - |
               set -x && \
-              cd next-dep-app-cloudbuild-env && \
+              git clone git@github.com:oankarberg/next-dep-app-cloudbuild-env.git test-2 && \
+              cd test-2 && \
               git add kubernetes.json && \
               git commit -m "Deploying image gcr.io/${PROJECT_ID}/next-departure-frontend-cloudbuild:${SHORT_SHA}
               Built from commit ${COMMIT_SHA} of repository next-departure-frontend
