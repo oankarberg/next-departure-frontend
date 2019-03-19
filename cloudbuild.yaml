@@ -75,6 +75,9 @@ steps:
               cd next-dep-app-cloudbuild-env && \
               git checkout candidate && \
               git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+      volumes:
+          - name: 'ssh'
+            path: /root/.ssh
     # This step generates the new manifest
     - name: 'gcr.io/cloud-builders/gcloud'
       id: Generate manifest
