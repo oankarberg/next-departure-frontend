@@ -65,7 +65,7 @@ steps:
 
     # [START cloudbuild-trigger-cd]
     # This step clones the hello-cloudbuild-env repository
-    - name: 'gcr.io/cloud-builders/git'
+    - name: 'gcr.io/cloud-builders/gcloud'
       id: Clone env repository
       entrypoint: /bin/sh
       args:
