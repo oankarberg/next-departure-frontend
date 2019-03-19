@@ -15,22 +15,22 @@
 # [START cloudbuild]
 steps:
     # This step builds the container image.
-    # - name: 'gcr.io/cloud-builders/docker'
-    #   id: Build
-    #   args:
-    #       - 'build'
-    #       - '-t'
-    #       - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
-    #       - '.'
+    - name: 'gcr.io/cloud-builders/docker'
+      id: Build
+      args:
+          - 'build'
+          - '-t'
+          - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
+          - '.'
 
-    # # This step pushes the image to Container Registry
-    # # The PROJECT_ID and SHORT_SHA variables are automatically
-    # # replaced by Cloud Build.
-    # - name: 'gcr.io/cloud-builders/docker'
-    #   id: Push
-    #   args:
-    #       - 'push'
-    #       - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
+    # This step pushes the image to Container Registry
+    # The PROJECT_ID and SHORT_SHA variables are automatically
+    # replaced by Cloud Build.
+    - name: 'gcr.io/cloud-builders/docker'
+      id: Push
+      args:
+          - 'push'
+          - 'eu.gcr.io/$PROJECT_ID/next-departure-frontend:$SHORT_SHA'
     # [END cloudbuild]
 
     # Decrypt the file containing the key
