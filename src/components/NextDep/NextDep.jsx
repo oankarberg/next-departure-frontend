@@ -35,6 +35,7 @@ class NextDep extends Component {
         const { location } = this.state;
         return (
             <div className="NextDep">
+                <h3> Hållplatser i närheten</h3>
                 {!location ? (
                     <Spinner />
                 ) : (

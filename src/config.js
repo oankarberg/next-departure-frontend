@@ -1,5 +1,5 @@
 const dev = {
-    API_ENDPOINT: 'http://localhost:4000'
+    API_ENDPOINT: 'http://localhost:8080'
 };
 
 const prod = {
