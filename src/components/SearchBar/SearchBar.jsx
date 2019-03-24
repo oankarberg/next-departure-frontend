@@ -28,6 +28,7 @@ class SearchBar extends Component {
                 <label className={`search ${className}`} htmlFor="inpt_search">
                     <input
                         id="inpt_search"
+                        autoComplete="off"
                         onFocus={() => {
                             this.setState({ className: 'active' });
                         }}
