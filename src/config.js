@@ -3,6 +3,7 @@ const dev = {
 };
 
 const prod = {
+    // Undefined API_ENDPOINT in graphql will point to relative path /graphql
     API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT
 };
 

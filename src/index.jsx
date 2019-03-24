@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
@@ -17,7 +18,9 @@ const client = new ApolloClient({
 ReactDOM.render(
     <GraphQLProvider value={client}>
         <Provider store={configureStore()}>
-            <App />
+            <ApolloProvider client={client}>
+                <App />
+            </ApolloProvider>
         </Provider>
     </GraphQLProvider>,
     document.getElementById('root')

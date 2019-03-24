@@ -30,6 +30,15 @@
 .flex-end {
     align-self: flex-end;
 }
+
+.ellipsis {
+    text-overflow: ellipsis;
+
+    /* Required for text-overflow to do anything */
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .App-link {
     color: #61dafb;
 }

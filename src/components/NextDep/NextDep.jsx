@@ -1,20 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './NextDep.css';
 import GeoLocate from '../GeoLocate/GeoLocate';
-import StationStops from '../StationStops/StationStops';
+import { NearStops, SearchStops } from '../StationStops/StationStops';
 import Spinner from '../Spinner/Spinner';
+import SearchBar from '../SearchBar/SearchBar';
 
 class NextDep extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            nearByStops: []
+            nearByStops: [],
+            input: ''
         };
 
         this.getInnerRef = this.getInnerRef.bind(this);
         this.currentPosition = this.currentPosition.bind(this);
         this.onPositionError = this.onPositionError.bind(this);
+        this.makeNewSearch = this.makeNewSearch.bind(this);
     }
 
     onPositionError(error) {
@@ -31,27 +34,43 @@ class NextDep extends Component {
         });
     }
 
+    makeNewSearch(input) {
+        this.setState({ input });
+    }
+
     render() {
-        const { location } = this.state;
+        const { location, input } = this.state;
         return (
             <div className="NextDep">
-                <h3> Hållplatser i närheten</h3>
+                <SearchBar onChange={this.makeNewSearch} />
+                {input === '' ? null : (
+                    <SearchStops
+                        name={input}
+                        lon={location ? location.coords.longitude : null}
+                        lat={location ? location.coords.latitude : null}
+                    />
+                )}
+
                 {!location ? (
-                    <Spinner />
+                    <Fragment>
+                        <Spinner />
+                    </Fragment>
                 ) : (
-                    <StationStops
-                        variables={{
-                            lat: location.coords.latitude,
-                            lon: location.coords.longitude
-                        }}
+                    <NearStops
+                        loaderText="Söker efter hållplatser i närheten"
+                        title={<h3> Hållplatser i närheten</h3>}
+                        lon={location.coords.longitude}
+                        lat={location.coords.latitude}
                         location={location}
                     />
                 )}
-                <GeoLocate
-                    onSuccess={this.currentPosition}
-                    onError={this.onPositionError}
-                    ref={this.getInnerRef}
-                />
+                {!location ? (
+                    <GeoLocate
+                        onSuccess={this.currentPosition}
+                        onError={this.onPositionError}
+                        ref={this.getInnerRef}
+                    />
+                ) : null}
             </div>
         );
     }

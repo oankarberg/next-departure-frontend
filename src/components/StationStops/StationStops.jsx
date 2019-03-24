@@ -1,28 +1,39 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
+import { graphql } from 'react-apollo';
+import { formatDistance } from '../../helpers/geo';
 import './StationStops.css';
 import Spinner from '../Spinner/Spinner';
-import { withQuery } from '../../graphql/graphql';
 
-const StationStops = ({ data: { nearByStops } }) => (
-    <div className="bus-stop-wrapper">
-        {!nearByStops ? (
-            <Spinner />
+const StationStops = ({ data: { searchStops }, title, loaderText }) => (
+    <Fragment>
+        {!searchStops ? (
+            <div>
+                <Spinner />
+                <div>{loaderText}</div>
+            </div>
         ) : (
-            nearByStops.map((stop, key) => (
-                <Link
-                    to={`stops/${stop.id}`}
-                    key={key}
-                    className="bus-stop-card"
-                >
-                    <div>{stop.name}</div>
-                    <div>{stop.dist} m</div>
-                </Link>
-            ))
+            <>
+                <div>{title}</div>
+                <div className="bus-stop-wrapper">
+                    {searchStops.map((stop, key) => (
+                        <Link
+                            to={`stops/${stop.id}`}
+                            key={key}
+                            className="bus-stop-card"
+                        >
+                            <div className="ellipsis">{stop.name}</div>
+                            <div className="right-text">
+                                {formatDistance(stop.dist)}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </>
         )}
-    </div>
+    </Fragment>
 );
 
 StationStops.propTypes = {
@@ -30,18 +41,26 @@ StationStops.propTypes = {
         nearByStops: PropTypes.array
     }).isRequired
 };
-const query = gql`
-    query nearByStops($lat: Float!, $lon: Float!) {
-        nearByStops(lat: $lat, lon: $lon) {
+
+const nearByQuery = gql`
+    query search($lat: Float!, $lon: Float!) {
+        searchStops(lat: $lat, lon: $lon) {
             id
             name
             dist
         }
     }
 `;
-const variables = {
-    lat: 12.3,
-    lon: 1223.2
-};
+const searchQuery = gql`
+    query search($name: String!, $lat: Float, $lon: Float) {
+        searchStops(name: $name, lat: $lat, lon: $lon) {
+            id
+            name
+            dist
+        }
+    }
+`;
 
-export default withQuery(StationStops, query, variables);
+const NearStops = graphql(nearByQuery)(StationStops);
+const SearchStops = graphql(searchQuery)(StationStops);
+export { NearStops, SearchStops };

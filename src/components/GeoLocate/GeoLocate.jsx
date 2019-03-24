@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { geolocated, geoPropTypes } from 'react-geolocated';
 
 class GeoLocate extends Component {
-    componentDidMount() {
-        console.log('this.props.coords', this.props);
-    }
+    componentDidMount() {}
 
     render() {
         return !this.props.isGeolocationAvailable ? (
