@@ -37,6 +37,7 @@ class SearchBar extends Component {
                             if (value === '') this.setState({ className: '' });
                         }}
                         type="text"
+                        placeholder="Sök hållplats"
                         onChange={this.onInputChange}
                     />
                 </label>
