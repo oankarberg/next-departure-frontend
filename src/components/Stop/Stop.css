@@ -20,9 +20,13 @@
     justify-content: space-between;
 }
 
+.bus-stop-card > div:nth-child(2) {
+    flex: 2 1 33%;
+}
+
 .bus-stop-card > div {
     text-align: left;
-    flex: 1;
+    flex: 1 1 auto;
 }
 
 .bus-stop-card > div.bus-number {
