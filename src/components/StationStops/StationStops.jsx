@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { formatDistance } from '../../helpers/geo';
 import './StationStops.css';
 import Spinner from '../Spinner/Spinner';
 
-const StationStops = ({ data: { searchStops }, title, loaderText }) => (
+const StationStops = ({
+    loading,
+    data: { searchStops },
+    title,
+    loaderText
+}) => (
     <Fragment>
         {!searchStops ? (
             <div>
@@ -25,9 +29,7 @@ const StationStops = ({ data: { searchStops }, title, loaderText }) => (
                             className="bus-stop-card"
                         >
                             <div className="ellipsis">{stop.name}</div>
-                            <div className="right-text">
-                                {formatDistance(stop.dist)}
-                            </div>
+                            <div className="right-text">{stop.dist}</div>
                         </Link>
                     ))}
                 </div>

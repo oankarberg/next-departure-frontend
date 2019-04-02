@@ -1,32 +1,36 @@
 .GeoLocate {
-  text-align: center;
+    text-align: center;
 }
 
 .GeoLocate-logo {
-  animation: GeoLocate-logo-spin infinite 20s linear;
-  height: 40vmin;
+    animation: GeoLocate-logo-spin infinite 20s linear;
+    height: 40vmin;
 }
 
 .GeoLocate-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.geolocate {
+    margin: 10px 0;
 }
 
 .GeoLocate-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes GeoLocate-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

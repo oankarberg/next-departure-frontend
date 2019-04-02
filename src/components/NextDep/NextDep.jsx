@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import './NextDep.css';
 import GeoLocate from '../GeoLocate/GeoLocate';
 import { NearStops, SearchStops } from '../StationStops/StationStops';
-import Spinner from '../Spinner/Spinner';
 import SearchBar from '../SearchBar/SearchBar';
 
 class NextDep extends Component {
@@ -51,11 +50,7 @@ class NextDep extends Component {
                     />
                 )}
 
-                {!location ? (
-                    <Fragment>
-                        <Spinner />
-                    </Fragment>
-                ) : (
+                {location ? (
                     <NearStops
                         loaderText="Söker efter hållplatser i närheten"
                         title={<h3> Hållplatser i närheten</h3>}
@@ -63,7 +58,7 @@ class NextDep extends Component {
                         lat={location.coords.latitude}
                         location={location}
                     />
-                )}
+                ) : null}
                 {!location ? (
                     <GeoLocate
                         onSuccess={this.currentPosition}
