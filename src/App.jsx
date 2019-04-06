@@ -34,7 +34,7 @@ const App = () => (
                     />
                 )}
             />
-            <Route exact path="/trains" component={Map} />
+            <Route path={['/trains/:trainId', '/trains']} component={Map} />
         </div>
     </Router>
 );

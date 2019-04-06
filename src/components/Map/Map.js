@@ -8,8 +8,8 @@ import { graphql } from 'react-apollo';
 import TransportIcon from '../Icons/TransportIcon';
 
 const TRAIN_SUB = gql`
-    subscription {
-        trainEvent {
+    subscription($trainId: String) {
+        trainEvent(trainId: $trainId) {
             publicTrainNumbers
             internalTrainNumbers
             timestamp
@@ -29,8 +29,7 @@ class CustomMap extends Component {
         super(props);
         this.state = {
             width: 0,
-            height: 0,
-            trains: [[64.594865, 18.668707], [50.974, 4.6947]]
+            height: 0
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -38,26 +37,38 @@ class CustomMap extends Component {
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-        const {
-            data: { subscribeToMore }
-        } = this.props;
-        subscribeToMore({
-            document: TRAIN_SUB,
-            variables: {},
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
-                const newTrain = subscriptionData.data.trainEvent;
-                const exists = prev.trains.find(
-                    train => train.id === newTrain.id
-                );
-                // Apollo magic takes care of this update
-                if (exists) return prev;
+    }
 
-                return Object.assign({}, prev, {
-                    trains: [newTrain, ...prev.trains]
-                });
+    static getDerivedStateFromProps(props, state) {
+        const {
+            data: { loading, subscribeToMore },
+            match: {
+                params: { trainId = null }
             }
-        });
+        } = props;
+
+        if (!loading && !state.subscription) {
+            const subscription = subscribeToMore({
+                document: TRAIN_SUB,
+                variables: { trainId },
+                updateQuery: (prev, { subscriptionData }) => {
+                    if (!subscriptionData.data) return prev;
+                    const newTrain = subscriptionData.data.trainEvent;
+                    const exists = prev.trains.find(
+                        train => train.id === newTrain.id
+                    );
+
+                    // Apollo magic takes care of this update by using ID field
+                    if (exists) return prev;
+
+                    return Object.assign({}, prev, {
+                        trains: [newTrain, ...prev.trains]
+                    });
+                }
+            });
+            return { subscription };
+        }
+        return null;
     }
 
     componentWillUnmount() {
