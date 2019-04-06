@@ -32,7 +32,7 @@ spec:
                 - env:
                       - name: WEBSOCKET_HOST
                         value: aldrigsen.se
-                - image: eu.gcr.io/GOOGLE_CLOUD_PROJECT/next-departure-frontend:COMMIT_SHA
+                  image: eu.gcr.io/GOOGLE_CLOUD_PROJECT/next-departure-frontend:COMMIT_SHA
                   imagePullPolicy: Always
                   name: next-departure-frontend
                   ports:
