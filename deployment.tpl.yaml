@@ -29,6 +29,9 @@ spec:
                 run: next-departure-frontend
         spec:
             containers:
+                - env:
+                      - name: WEBSOCKET_HOST
+                        value: aldrigsen.se
                 - image: eu.gcr.io/GOOGLE_CLOUD_PROJECT/next-departure-frontend:COMMIT_SHA
                   imagePullPolicy: Always
                   name: next-departure-frontend

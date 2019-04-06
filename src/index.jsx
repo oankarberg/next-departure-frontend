@@ -22,7 +22,7 @@ import { API_ENDPOINT, WS_ENDPOINT } from './config';
 const httpLink = new HttpLink({
     uri: API_ENDPOINT
 });
-console.log('API_ENDPOINT', API_ENDPOINT);
+
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
     uri: WS_ENDPOINT,
