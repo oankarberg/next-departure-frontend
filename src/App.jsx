@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import NextDep from './components/NextDep/NextDep';
 import Stop from './components/Stop/Stop';
-import Departures from './components/Departures/Departures';
+
+import Map from './components/Map/Map';
 import './App.css';
 import StartToEnd from './components/StartToEnd/StartToEnd';
 
@@ -26,13 +27,14 @@ const App = () => (
                 exact
                 path="/stops/:stopId/to/:endStopId"
                 component={props => (
-                        <StartToEnd
-                            {...props}
-                            startStopId={props.match.params.stopId}
-                            endStopId={props.match.params.endStopId}
-                        />
-                    )}
+                    <StartToEnd
+                        {...props}
+                        startStopId={props.match.params.stopId}
+                        endStopId={props.match.params.endStopId}
+                    />
+                )}
             />
+            <Route exact path="/trains" component={Map} />
         </div>
     </Router>
 );
