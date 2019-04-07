@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Map from 'pigeon-maps';
-import Marker from 'pigeon-marker';
+
 import Overlay from 'pigeon-overlay';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -82,11 +82,29 @@ class CustomMap extends Component {
     render() {
         const { height } = this.state;
         const {
-            data: { loading, error, trains }
+            data: { loading, trains },
+            match: {
+                params: { trainId = null }
+            }
         } = this.props;
+        let latCenter = 64.594865;
+        let lonCenter = 18.668707;
+        if (trains && trains.length > 0 && trainId) {
+            latCenter = trains[0].lat;
+            lonCenter = trains[0].lon;
+        }
         return (
             <div style={{ height: `${height}px` }}>
-                <Map center={[64.594865, 18.668707]} zoom={6}>
+                <Map
+                    // center={[64.594865, 18.668707]}
+                    center={[latCenter, lonCenter]}
+                    minZoom={4}
+                    maxZoom={14}
+                    defaultZoom={trainId ? 10 : 6}
+                    // onBoundsChanged={({ center, zoom, bounds, initial }) => {
+                    //     console.log('center ', center);
+                    // }}
+                >
                     {!loading && trains
                         ? trains.map(({ lat, lon, id }) => (
                               <Overlay

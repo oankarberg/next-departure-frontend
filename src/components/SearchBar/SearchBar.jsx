@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import gql from 'graphql-tag';
 import './SearchBar.css';
-import { propType } from 'graphql-anywhere';
 
 class SearchBar extends Component {
     constructor(props) {

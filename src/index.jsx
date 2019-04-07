@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink } from 'apollo-link';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import './index.css';

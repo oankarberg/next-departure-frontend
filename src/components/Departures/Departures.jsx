@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import { FaLongArrowAltRight } from 'react-icons/fa';
 import './Departures.css';
