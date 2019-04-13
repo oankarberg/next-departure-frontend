@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 
 import Map from 'pigeon-maps';
 
+import Cluster from 'pigeon-cluster';
 import Overlay from 'pigeon-overlay';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import TransportIcon from '../Icons/TransportIcon';
+import './Map.css';
 
 const TRAIN_SUB = gql`
     subscription($trainId: String) {
@@ -16,7 +18,7 @@ const TRAIN_SUB = gql`
             id
             lon
             lat
-            speedKnots
+            speedKmH
             trainId
             trackTrue
             variation
@@ -105,34 +107,38 @@ class CustomMap extends Component {
                     //     console.log('center ', center);
                     // }}
                 >
-                    {!loading && trains
-                        ? trains.map(({ lat, lon, id }) => (
-                              <Overlay
-                                  key={id}
-                                  anchor={[lat, lon]}
-                                  payload={id}
-                                  offset={[20, 20]}
-                              >
-                                  <div
-                                      onClick={({ event, anchor, payload }) => {
-                                          //   console.log('trainId ', id);
-                                      }}
+                    <Cluster clusterMarkerRadius={10}>
+                        {!loading && trains
+                            ? trains.map(({ lat, lon, id, speedKmH }) => (
+                                  <Overlay
+                                      key={id}
+                                      anchor={[lat, lon]}
+                                      payload={id}
+                                      offset={[20, 20]}
                                       style={{ color: 'black' }}
+                                      className="train-overlay"
                                   >
-                                      <TransportIcon
-                                          size="40px"
-                                          color="black"
-                                          category="TRAIN"
-                                      />
                                       {id}
-                                  </div>
-                              </Overlay>
-                          ))
-                        : null}
-
-                    {/* <Overlay anchor={[50.879, 4.6997]} offset={[120, 79]}>
-                        <img src="pigeon.jpg" width={240} height={158} alt="" />
-                    </Overlay> */}
+                                      <div
+                                          onClick={({
+                                              event,
+                                              anchor,
+                                              payload
+                                          }) => {
+                                              //   console.log('trainId ', id);
+                                          }}
+                                      >
+                                          <TransportIcon
+                                              size="40px"
+                                              color="black"
+                                              category="TRAIN"
+                                          />
+                                      </div>
+                                      {/* {speedKmH === 0 ? '' : `${speedKmH} km/h`} */}
+                                  </Overlay>
+                              ))
+                            : []}
+                    </Cluster>
                 </Map>
             </div>
         );
@@ -148,7 +154,7 @@ const trainQuery = gql`
             lon
             lat
             id
-            speedKnots
+            speedKmH
             trackTrue
             variation
             trainId
