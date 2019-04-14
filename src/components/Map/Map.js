@@ -134,7 +134,7 @@ class CustomMap extends Component {
                                               category="TRAIN"
                                           />
                                       </div>
-                                      {/* {speedKmH === 0 ? '' : `${speedKmH} km/h`} */}
+                                      {speedKmH === 0 ? '' : `${speedKmH} km/h`}
                                   </Overlay>
                               ))
                             : []}
