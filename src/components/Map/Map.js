@@ -107,38 +107,34 @@ class CustomMap extends Component {
                     //     console.log('center ', center);
                     // }}
                 >
-                    <Cluster clusterMarkerRadius={10}>
-                        {!loading && trains
-                            ? trains.map(({ lat, lon, id, speedKmH }) => (
-                                  <Overlay
-                                      key={id}
-                                      anchor={[lat, lon]}
-                                      payload={id}
-                                      offset={[20, 20]}
-                                      style={{ color: 'black' }}
-                                      className="train-overlay"
+                    {/* <Cluster offset={[20, 20]} clusterMarkerRadius={10}> */}
+                    {!loading && trains
+                        ? trains.map(({ lat, lon, id, speedKmH }) => (
+                              <Overlay
+                                  key={id}
+                                  anchor={[lat, lon]}
+                                  payload={id}
+                                  offset={[22.5, 30]}
+                                  style={{ color: 'black' }}
+                                  className="train-overlay"
+                              >
+                                  {id}
+                                  <div
+                                      onClick={({ event, anchor, payload }) => {
+                                          //   console.log('trainId ', id);
+                                      }}
                                   >
-                                      {id}
-                                      <div
-                                          onClick={({
-                                              event,
-                                              anchor,
-                                              payload
-                                          }) => {
-                                              //   console.log('trainId ', id);
-                                          }}
-                                      >
-                                          <TransportIcon
-                                              size="40px"
-                                              color="black"
-                                              category="TRAIN"
-                                          />
-                                      </div>
-                                      {speedKmH === 0 ? '' : `${speedKmH} km/h`}
-                                  </Overlay>
-                              ))
-                            : []}
-                    </Cluster>
+                                      <TransportIcon
+                                          size="40px"
+                                          color="black"
+                                          category="TRAIN"
+                                      />
+                                  </div>
+                                  {speedKmH === 0 ? '' : `${speedKmH} km/h`}
+                              </Overlay>
+                          ))
+                        : []}
+                    {/* </Cluster> */}
                 </Map>
             </div>
         );
