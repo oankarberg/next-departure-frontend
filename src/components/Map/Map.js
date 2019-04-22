@@ -26,6 +26,13 @@ const TRAIN_SUB = gql`
     }
 `;
 
+function wikimedia(x, y, z) {
+    const retina =
+        typeof window !== 'undefined' && window.devicePixelRatio >= 2;
+    return `https://maps.wikimedia.org/osm-intl/${z}/${x}/${y}${
+        retina ? '@2x' : ''
+    }.png`;
+}
 class CustomMap extends Component {
     constructor(props) {
         super(props);
@@ -84,7 +91,7 @@ class CustomMap extends Component {
     render() {
         const { height } = this.state;
         const {
-            data: { loading, trains },
+            data: { loading, trains = [] },
             match: {
                 params: { trainId = null }
             }
@@ -100,8 +107,16 @@ class CustomMap extends Component {
                 <Map
                     // center={[64.594865, 18.668707]}
                     center={[latCenter, lonCenter]}
-                    minZoom={4}
+                    minZoom={5}
                     maxZoom={14}
+                    provider={
+                        // wikimedia,
+                        (x, y, z) =>
+                            // `https://stamen-tiles.a.ssl.fastly.net/toner/${z}/${x}/${y}.png`
+                            // `https://cartodb-basemaps-1.global.ssl.fastly.net/dark_all/${z}/${x}/${y}.png`
+                            `https://aldrigsen.se/tiles/transport/${z}/${x}/${y}.png?apikey=b5a4218cba6243559dabec828f4048f3`
+                        // `http://a.tiles.openrailwaymap.org/standard/${z}/${x}/${y}.png`
+                    }
                     defaultZoom={trainId ? 10 : 6}
                     // onBoundsChanged={({ center, zoom, bounds, initial }) => {
                     //     console.log('center ', center);
