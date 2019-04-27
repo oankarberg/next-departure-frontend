@@ -1,3 +1,7 @@
 .train-overlay {
     text-align: center;
 }
+
+.pigeon-attribution > :first-child {
+    display: none !important;
+}

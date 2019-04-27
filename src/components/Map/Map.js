@@ -12,15 +12,16 @@ import './Map.css';
 const TRAIN_SUB = gql`
     subscription($trainId: String) {
         trainEvent(trainId: $trainId) {
-            publicTrainNumbers
-            internalTrainNumbers
-            timestamp
+            directionAngle
             id
-            lon
+            internalTrainNumbers
             lat
+            lon
+            publicTrainNumbers
             speedKmH
-            trainId
+            timestamp
             trackTrue
+            trainId
             variation
         }
     }
@@ -38,41 +39,9 @@ class CustomMap extends Component {
         super(props);
         this.state = {
             width: 0,
-            height: 0,
-            angleDegrees: []
+            height: 0
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    }
-
-    // eslint-disable-next-line react/sort-comp
-    componentDidUpdate(prevProps, prevState) {
-        if (
-            prevProps.data.trains &&
-            prevProps.data.trains !== this.props.data.trains
-        ) {
-            // if (prevState.angleDegrees !== this.state.angleDegrees) {
-
-            if (prevProps.data.trains.length == this.props.data.trains.length) {
-                const angleDegrees = this.props.data.trains.map(
-                    (train, key) => {
-                        const deg = Math.round(
-                            (Math.atan2(
-                                prevProps.data.trains[key].lon - train.lon,
-                                prevProps.data.trains[key].lat - train.lat
-                            ) *
-                                180) /
-                                Math.PI
-                        );
-                        return (deg == 0 && this.state.angleDegrees[key]) ||
-                            train.speedKmH == 0
-                            ? this.state.angleDegrees[key]
-                            : deg;
-                    }
-                );
-                this.setState({ angleDegrees });
-            }
-            // }
-        }
     }
 
     componentDidMount() {
@@ -82,7 +51,7 @@ class CustomMap extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const {
-            data: { loading, subscribeToMore, trains },
+            data: { loading, subscribeToMore },
             match: {
                 params: { trainId = null }
             }
@@ -122,7 +91,7 @@ class CustomMap extends Component {
     }
 
     render() {
-        const { height, angleDegrees } = this.state;
+        const { height } = this.state;
         const {
             data: { loading, trains = [] },
             match: {
@@ -157,41 +126,49 @@ class CustomMap extends Component {
                 >
                     {/* <Cluster offset={[20, 20]} clusterMarkerRadius={10}> */}
                     {!loading && trains
-                        ? trains.map(({ lat, lon, id, speedKmH }, index) => (
-                              <Overlay
-                                  key={id}
-                                  anchor={[lat, lon]}
-                                  payload={id}
-                                  offset={[35, 30]}
-                                  style={{ color: 'black' }}
-                                  className="train-overlay"
-                              >
-                                  {id}
-                                  <div
-                                      onClick={({ event, anchor, payload }) => {
-                                          //   console.log('trainId ', id);
-                                      }}
+                        ? trains.map(
+                              (
+                                  { lat, lon, id, speedKmH, directionAngle },
+                                  index
+                              ) => (
+                                  <Overlay
+                                      key={id}
+                                      anchor={[lat, lon]}
+                                      payload={id}
+                                      offset={[35, 28]}
+                                      style={{ color: 'black' }}
+                                      className="train-overlay"
                                   >
-                                      {/* <TransportIcon
+                                      {id}
+                                      <div
+                                          onClick={({
+                                              event,
+                                              anchor,
+                                              payload
+                                          }) => {
+                                              //   console.log('trainId ', id);
+                                          }}
+                                      >
+                                          {/* <TransportIcon
                                           size="40px"
                                           color="black"
                                           category="TRAIN"
                                       /> */}
-                                      <img
-                                          alt="train"
-                                          style={{
-                                              width: '70px',
-                                              transformOrigin: 'top top',
-                                              transform: `rotate(${angleDegrees[
-                                                  index
-                                              ] + 90}deg)`
-                                          }}
-                                          src="/assets/train.png"
-                                      />
-                                  </div>
-                                  {speedKmH === 0 ? '' : `${speedKmH} km/h`}
-                              </Overlay>
-                          ))
+                                          <img
+                                              alt="train"
+                                              style={{
+                                                  width: '70px',
+                                                  transformOrigin: 'top top',
+                                                  transform: `rotate(${directionAngle +
+                                                      90}deg)`
+                                              }}
+                                              src="/assets/train.png"
+                                          />
+                                      </div>
+                                      {speedKmH === 0 ? '' : `${speedKmH} km/h`}
+                                  </Overlay>
+                              )
+                          )
                         : []}
                     {/* </Cluster> */}
                 </Map>
@@ -205,6 +182,7 @@ const trainQuery = gql`
         trains {
             publicTrainNumbers
             internalTrainNumbers
+            directionAngle
             timestamp
             lon
             lat
