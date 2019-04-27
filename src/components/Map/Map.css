@@ -5,3 +5,8 @@
 .pigeon-attribution > :first-child {
     display: none !important;
 }
+
+.train-image {
+    width: 70px;
+    transition: transform 0.6s ease;
+}

@@ -156,11 +156,14 @@ class CustomMap extends Component {
                                       /> */}
                                           <img
                                               alt="train"
+                                              className="train-image"
                                               style={{
-                                                  width: '70px',
                                                   transformOrigin: 'top top',
-                                                  transform: `rotate(${directionAngle +
-                                                      90}deg)`
+                                                  transform:
+                                                      speedKmH !== 0
+                                                          ? `rotate(${directionAngle +
+                                                                90}deg)`
+                                                          : ''
                                               }}
                                               src="/assets/train.png"
                                           />
