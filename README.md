@@ -1,6 +1,6 @@
 ### Frontend for next departure
 
-Running under https://aldrigsen.se/ and https://aldrigsen.se/trains 
+Mount your old smartphone device on the wall and spin up https://aldrigsen.se/ and https://aldrigsen.se/trains.
 
 ### Playground project for utilizing some fun techniques
 * React Graphql for frontend 
